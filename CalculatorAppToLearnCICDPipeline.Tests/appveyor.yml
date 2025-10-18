@@ -1,27 +1,16 @@
 ﻿version: 1.0.{build}
-
-# Visual Studio 2022 image kullanıyoruz
 image: Visual Studio 2022
 
-# .NET 8 SDK kurulumu
 install:
-  # Eğer SDK zaten yüklüyse bu adım atlanır
-  - ps: Install-Product dotnet 8.0.100
+  - ps: Install-Product dotnet 9.0.306
 
-# AppVeyor varsayılan msbuild çağrılarını devre dışı bırakmak için sadece YAML ile build
-# build_script bölümünde dotnet CLI kullanıyoruz
 build_script:
-  # SDK ve ortam bilgilerini görmek için
-  - dotnet --info
+  - dotnet restore
+  - dotnet build --no-restore
 
-  # NuGet paketlerini restore et
-  - dotnet restore CalculatorAppToLearnCICDPipeline.sln
+test_script:
+  - dotnet test --no-build --logger "trx;LogFileName=test_results.trx"
 
-  # Ana projeyi ve test projelerini build et
-  - dotnet build CalculatorAppToLearnCICDPipeline.sln --no-restore --configuration Release
-
-  # Testleri çalıştır
-  - dotnet test CalculatorAppToLearnCICDPipeline.sln --no-build --configuration Release
-
-# Artık AppVeyor UI üzerinden "Visual Studio Solution" build adımı eklemeyin
-# Sadece bu YAML dosyasıyla build gerçekleşecek
+artifacts:
+  - path: '**\test_results.trx'
+    name: TestResults
