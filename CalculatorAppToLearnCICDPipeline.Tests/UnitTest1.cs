@@ -9,14 +9,14 @@ namespace CalculatorAppToLearnCICDPipeline.Tests
         public void Add_ShouldReturnSumOfTwoNumbers()
         {
             // Arrange
-            int x = 3;
-            int y = 2;
+            int x = 5;
+            int y = 7;
 
             // Act
             int result = Program.Add(x, y);
 
             // Assert
-            Assert.Equal(5, result);
+            Assert.Equal(12, result);
         }
     }
 }
