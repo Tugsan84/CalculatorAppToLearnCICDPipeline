@@ -1,7 +1,13 @@
 ﻿version: 1.0.{build}
 image: Visual Studio 2022
 
+# .NET 8 SDK kurulumu
+install:
+  # 8.0.100 sürümünü örnek aldım; ihtiyacınıza göre değiştirebilirsiniz
+  - ps: Install-Product dotnet 8.0.100
+
 build_script:
+  - dotnet --version       # SDK’nın yüklendiğini doğrulamak için
   - dotnet restore
   - dotnet build
   - dotnet test
