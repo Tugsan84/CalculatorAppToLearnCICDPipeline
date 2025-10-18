@@ -5,19 +5,23 @@ image: Visual Studio 2022
 
 # .NET 8 SDK kurulumu
 install:
-  # İhtiyaca göre SDK sürümü değiştirilebilir
+  # Eğer SDK zaten yüklüyse bu adım atlanır
   - ps: Install-Product dotnet 8.0.100
 
-# Build ve test adımları
+# AppVeyor varsayılan msbuild çağrılarını devre dışı bırakmak için sadece YAML ile build
+# build_script bölümünde dotnet CLI kullanıyoruz
 build_script:
   # SDK ve ortam bilgilerini görmek için
   - dotnet --info
 
-  # NuGet paketlerini yükle
-  - dotnet restore
+  # NuGet paketlerini restore et
+  - dotnet restore CalculatorAppToLearnCICDPipeline.sln
 
-  # Build et (restore zaten yapıldı)
-  - dotnet build --no-restore --configuration Release
+  # Ana projeyi ve test projelerini build et
+  - dotnet build CalculatorAppToLearnCICDPipeline.sln --no-restore --configuration Release
 
-  # Testleri çalıştır (build zaten yapıldı)
-  - dotnet test --no-build --configuration Release
+  # Testleri çalıştır
+  - dotnet test CalculatorAppToLearnCICDPipeline.sln --no-build --configuration Release
+
+# Artık AppVeyor UI üzerinden "Visual Studio Solution" build adımı eklemeyin
+# Sadece bu YAML dosyasıyla build gerçekleşecek
