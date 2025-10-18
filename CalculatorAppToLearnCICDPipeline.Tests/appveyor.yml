@@ -1,11 +1,23 @@
 ﻿version: 1.0.{build}
+
+# Visual Studio 2022 image kullanıyoruz
 image: Visual Studio 2022
 
+# .NET 8 SDK kurulumu
 install:
+  # İhtiyaca göre SDK sürümü değiştirilebilir
   - ps: Install-Product dotnet 8.0.100
 
+# Build ve test adımları
 build_script:
-  - dotnet --info            # SDK ve workload’ları kontrol etmek için
+  # SDK ve ortam bilgilerini görmek için
+  - dotnet --info
+
+  # NuGet paketlerini yükle
   - dotnet restore
-  - dotnet build --no-restore
-  - dotnet test --no-build
+
+  # Build et (restore zaten yapıldı)
+  - dotnet build --no-restore --configuration Release
+
+  # Testleri çalıştır (build zaten yapıldı)
+  - dotnet test --no-build --configuration Release
