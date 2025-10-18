@@ -16,7 +16,7 @@ namespace CalculatorAppToLearnCICDPipeline.Tests
             int result = Program.Add(x, y);
 
             // Assert
-            Assert.Equal(12, result);
+            Assert.Equal(11, result);
         }
     }
 }
