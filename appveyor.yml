@@ -1,31 +1,29 @@
-version: 1.0.{build}
+ï»¿version: 1.0.{build}
 image: Visual Studio 2022
 
+# --------------------------
+# 1ï¸âƒ£ Build aÅŸamasÄ±
+# --------------------------
 build_script:
   - dotnet restore
   - dotnet build --no-restore
 
+# --------------------------
+# 2ï¸âƒ£ Test aÅŸamasÄ± (TRX + HTML raporu oluÅŸturma)
+# --------------------------
 test_script:
-  # Testleri çalıştır ve TRX raporu oluştur
-  - dotnet test --no-build --logger "trx;LogFileName=test_results.trx"
-
-after_test:
-  # TRX dosyasını HTML'e dönüştür
   - ps: |
-      Write-Host "Test sonuçları HTML rapora dönüştürülüyor..."
-      $trxFile = Get-ChildItem -Recurse -Filter "test_results.trx" | Select-Object -First 1
-      if ($trxFile) {
-        $outputHtml = Join-Path $trxFile.Directory.FullName "test_report.html"
-        $xsltUrl = "https://raw.githubusercontent.com/dblock/trx2html/master/trx2html.xslt"
-        Invoke-WebRequest -Uri $xsltUrl -OutFile "trx2html.xslt"
-        msxsl $trxFile.FullName trx2html.xslt -o $outputHtml
-        Write-Host "HTML raporu oluşturuldu: $outputHtml"
-      } else {
-        Write-Host "TRX dosyası bulunamadı, HTML oluşturulamadı."
-      }
+      Write-Host "ğŸ§ª Testler Ã§alÄ±ÅŸtÄ±rÄ±lÄ±yor..."
+      dotnet test "CalculatorAppToLearnCICDPipeline.Tests" `
+        --no-build `
+        --logger "trx;LogFileName=TestResults/test_results.trx" `
+        --logger "html;LogFileName=TestResults/test_report.html"
 
+# --------------------------
+# 3ï¸âƒ£ Artifacts (Ã§Ä±ktÄ±lar)
+# --------------------------
 artifacts:
-  - path: '**\test_results.trx'
+  - path: CalculatorAppToLearnCICDPipeline.Tests\TestResults\test_results.trx
     name: TRXResults
-  - path: '**\test_report.html'
+  - path: CalculatorAppToLearnCICDPipeline.Tests\TestResults\test_report.html
     name: HTMLReport
