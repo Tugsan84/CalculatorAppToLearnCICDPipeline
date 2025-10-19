@@ -1,9 +1,6 @@
 version: 1.0.{build}
 image: Visual Studio 2022
 
-install:
-  - ps: Install-Product dotnet 9.0.306
-
 build_script:
   - dotnet restore
   - dotnet build --no-restore
