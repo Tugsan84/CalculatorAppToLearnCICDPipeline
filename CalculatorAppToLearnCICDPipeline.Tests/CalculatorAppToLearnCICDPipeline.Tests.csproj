@@ -26,8 +26,6 @@
     <ProjectReference Include="..\CalculatorAppToLearnCICDPipeline\CalculatorAppToLearnCICDPipeline.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Using Include="Xunit" />
-  </ItemGroup>
+
 
 </Project>
