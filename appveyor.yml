@@ -6,8 +6,26 @@ build_script:
   - dotnet build --no-restore
 
 test_script:
+  # Testleri çalýþtýr ve TRX raporu oluþtur
   - dotnet test --no-build --logger "trx;LogFileName=test_results.trx"
+
+after_test:
+  # TRX dosyasýný HTML'e dönüþtür
+  - ps: |
+      Write-Host "Test sonuçlarý HTML rapora dönüþtürülüyor..."
+      $trxFile = Get-ChildItem -Recurse -Filter "test_results.trx" | Select-Object -First 1
+      if ($trxFile) {
+        $outputHtml = Join-Path $trxFile.Directory.FullName "test_report.html"
+        $xsltUrl = "https://raw.githubusercontent.com/dblock/trx2html/master/trx2html.xslt"
+        Invoke-WebRequest -Uri $xsltUrl -OutFile "trx2html.xslt"
+        msxsl $trxFile.FullName trx2html.xslt -o $outputHtml
+        Write-Host "HTML raporu oluþturuldu: $outputHtml"
+      } else {
+        Write-Host "TRX dosyasý bulunamadý, HTML oluþturulamadý."
+      }
 
 artifacts:
   - path: '**\test_results.trx'
-    name: TestResults
+    name: TRXResults
+  - path: '**\test_report.html'
+    name: HTMLReport
