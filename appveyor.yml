@@ -10,14 +10,18 @@ build_script:
 test_script:
   - ps: |
       Write-Host "🧪 Testler çalıştırılıyor..."
-      # Testleri çalıştır, başarısız olsa da devam et
-      dotnet test "CalculatorAppToLearnCICDPipeline.Tests" --no-build `
-        --logger "trx;LogFileName=test_results.trx" `
-        --logger "html;LogFileName=test_report.html" `
-        --results-directory "CalculatorAppToLearnCICDPipeline.Tests\TestResults" `
-        || Write-Host "⚠ Testler başarısız oldu, build devam ediyor..."
+      try {
+          dotnet test "CalculatorAppToLearnCICDPipeline.Tests" --no-build `
+              --logger "trx;LogFileName=test_results.trx" `
+              --logger "html;LogFileName=test_report.html" `
+              --results-directory "CalculatorAppToLearnCICDPipeline.Tests\TestResults"
+      } catch {
+          Write-Host "⚠ Testler başarısız oldu, build devam ediyor..."
+      }
 
-# Artifacts: test dosyalarını al
+# Artifacts: test sonuçları ve build DLL’leri
 artifacts:
   - path: CalculatorAppToLearnCICDPipeline.Tests\TestResults\**
     name: TestResults
+  - path: CalculatorAppToLearnCICDPipeline\bin\Debug\net8.0\**
+    name: BuildDLLs
