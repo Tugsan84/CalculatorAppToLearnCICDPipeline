@@ -1,12 +1,10 @@
 ﻿version: 1.0.{build}
 image: Visual Studio 2022
 
-# Build adımları
 build_script:
   - dotnet restore
   - dotnet build --no-restore
 
-# Test adımları
 test_script:
   - ps: |
       Write-Host "🧪 Testler çalıştırılıyor..."
@@ -14,12 +12,11 @@ test_script:
           dotnet test "CalculatorAppToLearnCICDPipeline.Tests" --no-build `
               --logger "trx;LogFileName=test_results.trx" `
               --logger "html;LogFileName=test_report.html" `
-              --results-directory "CalculatorAppToLearnCICDPipeline.Tests\TestResults"
+              --results-directory "$env:APPVEYOR_BUILD_FOLDER\CalculatorAppToLearnCICDPipeline.Tests\TestResults"
       } catch {
           Write-Host "⚠ Testler başarısız oldu, build devam ediyor..."
       }
 
-# Artifacts: test sonuçları ve build DLL’leri
 artifacts:
   - path: CalculatorAppToLearnCICDPipeline.Tests\TestResults\**
     name: TestResults
