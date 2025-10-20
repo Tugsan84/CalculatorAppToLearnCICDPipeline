@@ -7,18 +7,22 @@ build_script:
 
 test_script:
   - ps: |
+      Write-Host "🧪 TestResults klasörü hazırlanıyor..."
+      $testResultsDir = "$env:APPVEYOR_BUILD_FOLDER\CalculatorAppToLearnCICDPipeline.Tests\TestResults"
+      if (-not (Test-Path $testResultsDir)) { New-Item -ItemType Directory -Path $testResultsDir }
+
       Write-Host "🧪 Testler çalıştırılıyor..."
       try {
           dotnet test "CalculatorAppToLearnCICDPipeline.Tests" --no-build `
               --logger "trx;LogFileName=test_results.trx" `
               --logger "html;LogFileName=test_report.html" `
-              --results-directory "$env:APPVEYOR_BUILD_FOLDER\CalculatorAppToLearnCICDPipeline.Tests\TestResults"
+              --results-directory $testResultsDir
       } catch {
           Write-Host "⚠ Testler başarısız oldu, build devam ediyor..."
       }
 
-artifacts:
-  - path: CalculatorAppToLearnCICDPipeline.Tests\TestResults\**
-    name: TestResults
-  - path: CalculatorAppToLearnCICDPipeline\bin\Debug\net8.0\**
-    name: BuildDLLs
+after_build:
+  - ps: |
+      Write-Host "📦 Artifacts publish ediliyor..."
+      appveyor PushArtifact "$env:APPVEYOR_BUILD_FOLDER\CalculatorAppToLearnCICDPipeline.Tests\TestResults\**" -Name "TestResults"
+      appveyor PushArtifact "$env:APPVEYOR_BUILD_FOLDER\CalculatorAppToLearnCICDPipeline\bin\Debug\net8.0\**" -Name "BuildDLLs"
