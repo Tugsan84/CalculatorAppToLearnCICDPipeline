@@ -1,29 +1,19 @@
 ﻿version: 1.0.{build}
 image: Visual Studio 2022
 
-# --------------------------
-# 1️⃣ Build aşaması
-# --------------------------
 build_script:
   - dotnet restore
   - dotnet build --no-restore
 
-# --------------------------
-# 2️⃣ Test aşaması (TRX + HTML raporu oluşturma)
-# --------------------------
 test_script:
-  - ps: |
-      Write-Host "🧪 Testler çalıştırılıyor..."
-      dotnet test "CalculatorAppToLearnCICDPipeline.Tests" `
-        --no-build `
-        --logger "trx;LogFileName=TestResults/test_results.trx" `
-        --logger "html;LogFileName=TestResults/test_report.html"
+  - ps: Write-Host "🧪 Testler çalıştırılıyor..."
+  - dotnet test "CalculatorAppToLearnCICDPipeline.Tests" `
+      --no-build `
+      --logger "trx;LogFileName=test_results.trx" `
+      --logger "html;LogFileName=test_report.html"
 
-# --------------------------
-# 3️⃣ Artifacts (çıktılar)
-# --------------------------
 artifacts:
-  - path: CalculatorAppToLearnCICDPipeline.Tests\TestResults\test_results.trx
+  - path: CalculatorAppToLearnCICDPipeline.Tests\TestResults\TestResults\test_results.trx
     name: TRXResults
-  - path: CalculatorAppToLearnCICDPipeline.Tests\TestResults\test_report.html
+  - path: CalculatorAppToLearnCICDPipeline.Tests\TestResults\TestResults\test_report.html
     name: HTMLReport
