@@ -6,14 +6,14 @@ build_script:
   - dotnet build --no-restore
 
 test_script:
-  - ps: Write-Host "🧪 Testler çalıştırılıyor..."
-  - dotnet test "CalculatorAppToLearnCICDPipeline.Tests" `
-      --no-build `
-      --logger "trx;LogFileName=test_results.trx" `
-      --logger "html;LogFileName=test_report.html"
+  - ps: |
+      Write-Host "🧪 Testler çalıştırılıyor..."
+      dotnet test "CalculatorAppToLearnCICDPipeline.Tests" --no-build `
+        --logger "trx;LogFileName=test_results.trx" `
+        --logger "html;LogFileName=test_report.html"
 
 artifacts:
-  - path: CalculatorAppToLearnCICDPipeline.Tests\TestResults\TestResults\test_results.trx
+  - path: CalculatorAppToLearnCICDPipeline.Tests\TestResults\test_results.trx
     name: TRXResults
-  - path: CalculatorAppToLearnCICDPipeline.Tests\TestResults\TestResults\test_report.html
+  - path: CalculatorAppToLearnCICDPipeline.Tests\TestResults\test_report.html
     name: HTMLReport
